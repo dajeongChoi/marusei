@@ -6,6 +6,7 @@ import com.github.smdj.marusei.domain.Credential;
 import javax.persistence.*;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 @Entity(name = "Credential")
 @Table(name = "credential",
@@ -91,5 +92,17 @@ public class CredentialEntity implements Credential {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", CredentialEntity.class.getSimpleName() + "[", "]")
+                .add("id=" + id)
+                .add("account=" + account)
+                .add("publicKey='" + publicKey + "'")
+                .add("secreteHash='" + secreteHash + "'")
+                .add("createdAt=" + createdAt)
+                .add("updatedAt=" + updatedAt)
+                .toString();
     }
 }

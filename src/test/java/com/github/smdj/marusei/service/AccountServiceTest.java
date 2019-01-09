@@ -80,6 +80,7 @@ public class AccountServiceTest {
                 .hasSize(2);
 
         for (CredentialEntity credentialEntity : list) {
+            log.debug("credentialEntity : {}", credentialEntity);
             assertThat(credentialEntity)
                     .isNotNull()
                     .extracting(Credential::getAccount, Credential::getCreatedAt, Credential::getUpdatedAt)
