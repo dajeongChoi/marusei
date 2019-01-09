@@ -1,8 +1,12 @@
 package com.github.smdj.marusei.controller;
 
 import com.github.smdj.marusei.controller.request.SignUpRequest;
+import com.github.smdj.marusei.domain.Account;
+import com.github.smdj.marusei.service.AccountService;
+import com.github.smdj.marusei.service.params.CreateAccountParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,6 +18,9 @@ import javax.validation.Valid;
 @Controller
 class IndexControllerImpl implements IndexController {
     private static final Logger log = LoggerFactory.getLogger(IndexControllerImpl.class);
+
+    @Autowired
+    private AccountService accountService;
 
     @Override
     public String index() {
@@ -45,6 +52,14 @@ class IndexControllerImpl implements IndexController {
             return "page/signup";
         }
 
-        return "page/login";
+        CreateAccountParams createAccountParams = new CreateAccountParams(signUpRequest.getEmail(),
+                signUpRequest.getNickname(), signUpRequest.getPassword());
+        Account account = accountService.create(createAccountParams);
+
+        if (account == null) {
+            throw new RuntimeException("signup 데이터 db 입력 실패");
+        }
+
+        return "redirect:/login";
     }
 }
