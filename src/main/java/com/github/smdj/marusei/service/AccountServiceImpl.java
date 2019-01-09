@@ -10,6 +10,7 @@ import com.github.smdj.marusei.service.params.CreateAccountParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -24,20 +25,25 @@ class AccountServiceImpl implements AccountService {
     @Autowired
     private CredentialRepository credentialRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public Account create(CreateAccountParams createAccountParams) {
         if (log.isTraceEnabled()) {
             log.trace("createAccountParams : {}", createAccountParams);
         }
 
-        Instant time = Instant.now();
-        Account account = new AccountEntity(createAccountParams.getEmail(), createAccountParams.getNickname(), time);
+        Instant creatTime = Instant.ofEpochMilli(System.currentTimeMillis());
+        Account account = new AccountEntity(createAccountParams.getEmail(), createAccountParams.getNickname(), creatTime);
         account = accountRepository.saveAndFlush((AccountEntity) account);
 
-        Credential credential = new CredentialEntity(account, account.getEmail(), createAccountParams.getPassword(), time);
+        Credential credential = new CredentialEntity(account, account.getEmail(),
+                passwordEncoder.encode(createAccountParams.getPassword()), creatTime);
         credentialRepository.saveAndFlush((CredentialEntity) credential);
 
-        credential = new CredentialEntity(account, account.getNickname(), createAccountParams.getPassword(), time);
+        credential = new CredentialEntity(account, account.getNickname(),
+                passwordEncoder.encode(createAccountParams.getPassword()), creatTime);
         credentialRepository.saveAndFlush((CredentialEntity) credential);
 
         return account;
