@@ -100,7 +100,7 @@ public class CredentialEntity implements Credential {
                 .add("id=" + id)
                 .add("account=" + account)
                 .add("publicKey='" + publicKey + "'")
-                .add("secreteHash='" + secreteHash + "'")
+                .add("secretHash='" + secretHash + "'")
                 .add("createdAt=" + createdAt)
                 .add("updatedAt=" + updatedAt)
                 .toString();
