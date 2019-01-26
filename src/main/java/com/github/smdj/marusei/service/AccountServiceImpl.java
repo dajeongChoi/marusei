@@ -34,16 +34,16 @@ class AccountServiceImpl implements AccountService {
             log.trace("createAccountParams : {}", createAccountParams);
         }
 
-        Instant creatTime = Instant.ofEpochMilli(System.currentTimeMillis());
-        Account account = new AccountEntity(createAccountParams.getEmail(), createAccountParams.getNickname(), creatTime);
+        Instant time = Instant.ofEpochMilli(System.currentTimeMillis());
+        Account account = new AccountEntity(createAccountParams.getEmail(), createAccountParams.getNickname(), time);
         account = accountRepository.saveAndFlush((AccountEntity) account);
 
         Credential credential = new CredentialEntity(account, account.getEmail(),
-                passwordEncoder.encode(createAccountParams.getPassword()), creatTime);
+                passwordEncoder.encode(createAccountParams.getPassword()), time);
         credentialRepository.saveAndFlush((CredentialEntity) credential);
 
         credential = new CredentialEntity(account, account.getNickname(),
-                passwordEncoder.encode(createAccountParams.getPassword()), creatTime);
+                passwordEncoder.encode(createAccountParams.getPassword()), time);
         credentialRepository.saveAndFlush((CredentialEntity) credential);
 
         return account;
